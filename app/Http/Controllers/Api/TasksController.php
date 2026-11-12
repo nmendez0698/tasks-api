@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TasksController extends Controller
 {
@@ -22,8 +23,22 @@ class TasksController extends Controller
      */
     public function store(Request $request)
     {
-        $tarea = Task::create($request->all());
-        return response()->json($tarea, 201);
+       $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'isCompleted' => 'boolean'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => '¡Body de la solicitud inválido!',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+        else{
+            $tareaNueva = Task::create($validator->validated());
+            return response()->json($tareaNueva, 201);
+        }
     }
 
     /**
@@ -31,8 +46,13 @@ class TasksController extends Controller
      */
     public function show($id)
     {
-        $tarea = Task::findOrFail($id);
-        return response()->json($tarea, 200);
+        $tarea = Task::find($id);
+        if (!$tarea) {
+            return response()->json(['message' => 'La tarea solicitada no existe'], 404);
+        }
+        else{
+            return response()->json($tarea, 200);
+        }
     }
 
     /**
@@ -40,8 +60,27 @@ class TasksController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $tarea = Task::findOrFail($id)->update($request->all());
-        return response()->json($tarea, 200);
+        $tareaEditar = Task::find($id);
+        if (!$tareaEditar) {
+            return response()->json(['message' => 'La tarea solicitada no existe'], 404);
+        }
+        else{
+            $validator = Validator::make($request->all(), [
+                'title' => 'sometimes|required|string|max:255',
+                'description' => 'nullable|string',
+                'isCompleted' => 'boolean'
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => '¡Body de la solicitud inválido!',
+                    'errors' => $validator->errors()
+                ], 400);
+            }
+            else{
+                $tareaEditar->update($validator->validated());
+                return response()->json($tareaEditar, 200);
+            }
+        }
     }
 
     /**
@@ -49,7 +88,13 @@ class TasksController extends Controller
      */
     public function destroy(string $id)
     {
-        Task::findOrFail($id)->delete();
-        return response()->json(['message' => 'Tarea eliminada con éxito'], 200);
+        $tarea = Task::find($id);
+        if (!$tarea) {
+            return response()->json(['message' => 'La tarea solicitada no existe'], 404);
+        }
+        else{
+            $tarea->delete();
+            return response()->json(['message' => 'Tarea eliminada con éxito'], 200);
+        }
     }
 }

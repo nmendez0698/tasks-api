@@ -26,7 +26,8 @@ jobs:
 
     - name: Configurar variables de entorno y SQLite para pruebas
       run: |
-        cp .env.example .env || echo "APP_KEY=base64:$(php -r 'echo base64_encode(random_bytes(32));')" > .env
+        cp .env.example .env
+        php artisan key:generate --ansi
         sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=sqlite/' .env
         sed -i 's/DB_DATABASE=.*/DB_DATABASE=:memory:/' .env
         php artisan config:clear

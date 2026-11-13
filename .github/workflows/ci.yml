@@ -17,8 +17,8 @@ jobs:
     - name: Configurar PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.3' # Usamos una versión estable compatible en Actions (8.3 o 8.2), ya que 8.5 es muy reciente para los runners estándar
-        extensions: mbstring, pdo_sqlite, bcmath, curl
+        php-version: '8.4'
+        extensions: mbstring, pdo_sqlite, bcmath, curl, dom, fileinfo, xml, tokenizer
         tools: composer:2.8.12
 
     - name: Instalar dependencias de Composer

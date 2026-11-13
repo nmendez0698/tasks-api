@@ -1,0 +1,249 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Gestión de Tareas",
+        "description": "Documentación de la API REST para la gestión básica de tareas",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Servidor de desarrollo"
+        }
+    ],
+    "paths": {
+        "/api/tasks": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Listar todas las tareas",
+                "description": "Retorna una colección con todas las tareas existentes",
+                "operationId": "getTasksList",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa, retorna la lista de tareas",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": [
+                                    {
+                                        "id": 2,
+                                        "title": "Tarea secundaria",
+                                        "description": "Segunda tarea de prueba",
+                                        "isCompleted": false,
+                                        "created_at": "2026-06-06T13:00:00.000000Z",
+                                        "updated_at": "2026-06-06T13:00:00.000000Z"
+                                    },
+                                    {
+                                        "id": 1,
+                                        "title": "Tarea primaria",
+                                        "description": "Primera tarea de prueba",
+                                        "isCompleted": true,
+                                        "created_at": "2026-06-06T12:00:00.000000Z",
+                                        "updated_at": "2026-06-06T12:00:00.000000Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Crear tarea",
+                "description": "Agrega una nueva tarea a la base, asegurando que el título no esté vacío",
+                "operationId": "storeTask",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Tarea de prueba"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Tarea agregada para realización de pruebas"
+                                    },
+                                    "isCompleted": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "required": [
+                                    "title"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tarea creada exitosamente, devuelve la tarea agregada",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 1,
+                                    "title": "Nueva tarea",
+                                    "description": "Tarea de ejemplo agregada",
+                                    "isCompleted": false,
+                                    "created_at": "2026-06-06T12:00:00.000000Z",
+                                    "updated_at": "2026-06-06T12:00:00.000000Z"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Body inválido (no pasó validación de título no vacío)"
+                    }
+                }
+            }
+        },
+        "/api/tasks/{id}": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Obtener tarea específica",
+                "description": "Busca una tarea específica por su id y devuelve el objeto si es encontrada",
+                "operationId": "getTask",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa, retorna la tarea encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 1,
+                                    "title": "Tarea encontrada",
+                                    "description": "Tarea de ejemplo encontrada en la búsqueda",
+                                    "isCompleted": false,
+                                    "created_at": "2026-06-06T12:00:00.000000Z",
+                                    "updated_at": "2026-06-06T12:00:00.000000Z"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Operación fallida, no se encontró la tarea"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Actualizar tarea",
+                "description": "Modifica uno o más atributos de una tarea específica, siempre asegurando que el título no esté vacío",
+                "operationId": "updateTask",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Tarea de prueba"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Tarea agregada para realización de pruebas"
+                                    },
+                                    "isCompleted": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": false
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tarea actualizada exitosamente, devuelve la tarea modificada",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 1,
+                                    "title": "Tarea modificada",
+                                    "description": "Tarea de ejemplo modificada",
+                                    "isCompleted": false,
+                                    "created_at": "2026-06-06T12:00:00.000000Z",
+                                    "updated_at": "2026-06-06T12:00:00.000000Z"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Body inválido (no pasó validación de título no vacío)"
+                    },
+                    "404": {
+                        "description": "Operación fallida, no se encontró la tarea"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Eliminar tarea específica",
+                "description": "Borra una tarea específica, buscándola por su id",
+                "operationId": "destroyTask",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa, se eliminó la tarea"
+                    },
+                    "404": {
+                        "description": "Operación fallida, no se encontró la tarea"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Tasks",
+            "description": "Tasks"
+        }
+    ]
+}

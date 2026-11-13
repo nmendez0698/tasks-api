@@ -99,7 +99,7 @@ El proyecto incluye pruebas automatizadas para los escenarios de creación exito
 
 Para ejecutarlas dentro del entorno del contenedor, corre:
 ```bash
-docker exec -it task-api-container php artisan test
+docker exec -it tasks-api-container php artisan test
 ```
 ---
 

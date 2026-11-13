@@ -24,7 +24,7 @@ Se seleccionó **PHP y Laravel** por los siguientes motivos:
 
 ## 🚀 Ejecución local
 
-Para ejecutar la API directamente en un entorno local sin contenedores, sigue estos pasos:
+Para ejecutar la API directamente en un entorno local sin contenedores, sigue estos pasos según tu sistema operativo y terminal:
 
 1. **Clona el repositorio:**
    ```bash
@@ -37,20 +37,39 @@ Para ejecutar la API directamente en un entorno local sin contenedores, sigue es
    ```
 
 3. **Configura el archivo de entorno:**
+   * **Linux / macOS / Git Bash:**
+     ```bash
+     cp .env.example .env
+     ```
+   * **Windows (PowerShell):**
+     ```powershell
+     Copy-Item .env.example .env
+     ```
+   * **Windows (CMD):**
+     ```cmd
+     copy .env.example .env
+     ```
+
+   Luego genera la llave de la aplicación:
    ```bash
-   cp .env.example .env
    php artisan key:generate
    ```
 
-4. **Configura la base de datos (SQLite):**
-   * Asegúrate de que en tu archivo `.env` el parámetro esté configurado de la siguiente manera:
+4. **Configura la base de datos (SQLite) y manejo de sesiones:**
+   * Asegúrate de que en tu archivo `.env` el parámetro de base de datos use una ruta relativa para evitar conflictos entre local y Docker:
      ```env
      DB_CONNECTION=sqlite
+     DB_DATABASE=database/database.sqlite
      ```
-   * Crea el archivo de base de datos vacío:
-     ```bash
-     touch database/database.sqlite
+   * Como esta aplicación es una API REST y no requiere el uso de sesiones web, asegúrate de configurar el driver de sesión como `array` en tu `.env` para evitar buscar tablas innecesarias:
+     ```env
+     SESSION_DRIVER=array
      ```
+   * **Crea el archivo de base de datos vacío según tu terminal:**
+     * *Linux / macOS / Git Bash:* `touch database/database.sqlite`
+     * *Windows (PowerShell):* `New-Item -ItemType File -Force database/database.sqlite`
+     * *Windows (CMD):* `type nul > database/database.sqlite`
+
    * Ejecuta las migraciones:
      ```bash
      php artisan migrate
@@ -62,7 +81,7 @@ Para ejecutar la API directamente en un entorno local sin contenedores, sigue es
    ```
    La API estará disponible en `http://localhost:8000`.
 
-6. **Ejecutar pruebas automatizadas:**
+6. **Ejecutar pruebas automatizadas en local:**
    ```bash
    php artisan test
    ```
@@ -71,14 +90,14 @@ Para ejecutar la API directamente en un entorno local sin contenedores, sigue es
 
 ## 🐳 Ejecución con Docker
 
-El proyecto cuenta con un `Dockerfile` funcional para su construcción y ejecución local en contenedores. 
+El proyecto cuenta con un `Dockerfile` optimizado para incluir las dependencias de desarrollo y permitir la ejecución de pruebas.
 
-1. **Construir la imagen de Docker** (desde la raíz del proyecto donde se encuentra el Dockerfile):
+1. **Construir la imagen de Docker** (desde la raíz del proyecto):
    ```bash
    docker build -t tasks-api .
    ```
 
-2. **Ejecutar el contenedor** (mapeando el puerto correspondiente):
+2. **Ejecutar el contenedor** (mapeando el puerto 8000):
    ```bash
    docker run --rm --name tasks-api-container -p 8000:8000 -d tasks-api
    ```
@@ -87,7 +106,7 @@ El proyecto cuenta con un `Dockerfile` funcional para su construcción y ejecuci
 
 ## 📖 Documentación de API con Swagger
 
-Puedes explorar y probar todos los endpoints de la API de forma interactiva accediendo a la siguiente ruta una vez que el contenedor esté corriendo:
+Puedes explorar y probar todos los endpoints de la API de forma interactiva accediendo a la siguiente ruta una vez que el servidor local o contenedor esté corriendo:
 
 **`http://localhost:8000/api/documentation`**
 

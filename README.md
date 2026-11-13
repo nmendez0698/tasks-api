@@ -22,6 +22,53 @@ Se seleccionó **PHP y Laravel** por los siguientes motivos:
 
 ---
 
+## 🚀 Ejecución local
+
+Para ejecutar la API directamente en un entorno local sin contenedores, sigue estos pasos:
+
+1. **Clona el repositorio:**
+   ```bash
+   git clone https://github.com/nmendez0698/tasks-api.git
+   ```
+
+2. **Dentro del proyecto, instala las dependencias de PHP:**
+   ```bash
+   composer install
+   ```
+
+3. **Configura el archivo de entorno:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Configura la base de datos (SQLite):**
+   * Asegúrate de que en tu archivo `.env` el parámetro esté configurado de la siguiente manera:
+     ```env
+     DB_CONNECTION=sqlite
+     ```
+   * Crea el archivo de base de datos vacío:
+     ```bash
+     touch database/database.sqlite
+     ```
+   * Ejecuta las migraciones:
+     ```bash
+     php artisan migrate
+     ```
+
+5. **Inicia el servidor de desarrollo:**
+   ```bash
+   php artisan serve
+   ```
+   La API estará disponible en `http://localhost:8000`.
+
+6. **Ejecutar pruebas automatizadas:**
+   ```bash
+   php artisan test
+   ```
+
+---
+
 ## 🐳 Ejecución con Docker
 
 El proyecto cuenta con un `Dockerfile` funcional para su construcción y ejecución local en contenedores. 
@@ -33,7 +80,7 @@ El proyecto cuenta con un `Dockerfile` funcional para su construcción y ejecuci
 
 2. **Ejecutar el contenedor** (mapeando el puerto correspondiente):
    ```bash
-   docker run --rm --name task-api-container -p 8000:8000 -d tasks-api
+   docker run --rm --name tasks-api-container -p 8000:8000 -d tasks-api
    ```
 
 ---
@@ -54,3 +101,12 @@ Para ejecutarlas dentro del entorno del contenedor, corre:
 ```bash
 docker exec -it task-api-container php artisan test
 ```
+---
+
+## 📋 Pipeline de Integración Continua (CI)
+
+El proyecto cuenta con un flujo automatizado en **GitHub Actions** (`.github/workflows/ci.yaml`) que se ejecuta en cada `push` o `pull_request` a las ramas principales, encargándose de:
+* Configurar el entorno con **PHP 8.4**.
+* Instalar dependencias mediante Composer.
+* Configurar SQLite en memoria.
+* Ejecutar la suite completa de pruebas automatizadas.
